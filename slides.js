@@ -203,8 +203,8 @@ function setUpTouchHandlers() {
   var startX,
       startY,
       dist,
-      thresholdMain = 125, // minimum magnitude of swipe
-      thresholdSecondary = 100, // maximum magnitude in perpendicular direction (left != up-left)
+      thresholdMain = 75, // minimum magnitude of swipe
+      thresholdSecondary = 50, // maximum magnitude in perpendicular direction (left != up-left)
       allowedTime = 200, // ignore movements longer than this
       elapsedTime,
       startTime;
