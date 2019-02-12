@@ -31,7 +31,14 @@ function init() {
     preloadImages();
   }
   if (!localStorage.getItem("showSidebar")) {
-    localStorage.showSidebar = true;
+    localStorage.setItem("showSidebar", true);
+  } else {
+    var sidebar = document.getElementById("sidebar")
+    if (JSON.parse(localStorage.showSidebar) === true) { 
+      sidebar.className = "open";
+    } else { 
+      sidebar.className = "closed";
+    }
   }
   addNavEventHandlers();
 }
@@ -50,6 +57,7 @@ function preloadImages() {
     imgs[i].onload = function() {
       --imgsToLoad;
       if (imgsToLoad <= 0) {
+        populateSidebar();
         appendSlideElements();
       }
     }
@@ -85,6 +93,39 @@ function appendSlideElements() {
   determineDefaultSlide();
 }
 
+function populateSidebar() {
+  var sidebar = document.getElementById("sidebar-list")
+  localStorage.getObject("slides").forEach(function (slide, index) {
+    var newSlide = document.createElement("div");
+    newSlide.id = "slide-sidebar-" + (index+1);
+    newSlide.className = "slide-sidebar-item";
+
+    newSlide.setAttribute("data-url", slide.img);
+    newSlide.setAttribute("data-index", (index+1));
+    newSlide.setAttribute("data-caption", slide.caption);
+    newSlide.setAttribute("data-fit", slide.fit);
+    newSlide.setAttribute("title", slide.caption);
+
+    var newSlideImage = document.createElement("div");
+    newSlideImage.className = "sidebar-image";
+    newSlideImage.style.backgroundImage = "url('" + slide.img + "')"
+    newSlideImage.style.backgroundPosition = "center center";
+    newSlideImage.style.backgroundSize = slide.fit || "contain";
+    newSlide.appendChild(newSlideImage);
+
+    var newSlideCount = document.createElement("div");
+    newSlideCount.className = "sidebar-count";
+    newSlideCount.textContent = (index+1);
+    newSlideImage.appendChild(newSlideCount);
+
+    newSlide.addEventListener('click', function() {
+      jumpToSlideFromSidebar(index+1)
+    });
+
+    sidebar.appendChild(newSlide);
+  });
+}
+
 // check location hash, then check localStorage.settings, otherwise fall back to 1
 function determineDefaultSlide() {
   if (location.hash && !isNaN(parseInt(location.hash.substring(1), 10))) {
@@ -98,7 +139,7 @@ function determineDefaultSlide() {
 
 // set currently visible slide to given index
 // if out of bounds, set to the first/last possible slide
-// this will update localStoage, so the last-viewed slide should appear on reload
+// this will update localStorage, so the last-viewed slide should appear on reload
 function setActiveSlide(index) {
   function clampSlideNumber(num) {
     if (num <= 0) {
@@ -116,38 +157,67 @@ function setActiveSlide(index) {
   // no active slides
   if (!active) {
     document.getElementById("slide-" + targetSlide).classList.add("active-slide");
+    document.getElementById("slide-sidebar-" + targetSlide).classList.add("active-slide");
     localStorage.currentSlide = targetSlide;
   // active slide exists, check if this is actually a change
   } else if (active && active.getAttribute("data-index") !== targetSlide) {
     document.getElementById("slide-" + active.getAttribute("data-index")).classList.remove("active-slide");
+    document.getElementById("slide-sidebar-" + active.getAttribute("data-index")).classList.remove("active-slide");
     document.getElementById("slide-" + targetSlide).classList.add("active-slide");
+    document.getElementById("slide-sidebar-" + targetSlide).classList.add("active-slide");
     localStorage.currentSlide = targetSlide;
   }
 }
 
+// event handlers for navigation
 function nextSlide() {
   setActiveSlide(parseInt(localStorage.currentSlide, 10) + 1);
 }
 function prevSlide() {
-  setActiveSlide(parseInt(localStorage.currentSlide, 10) - 1);  
+  setActiveSlide(parseInt(localStorage.currentSlide, 10) - 1);
 }
+function jumpToSlideFromSidebar(slide) {
+  setActiveSlide(slide);
 
-// event handlers for prev/next in main slide area
+  // if on a tall device, we automatically close the sidebar
+  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+  if (w < h) {
+    var sidebar = document.getElementById("sidebar");
+    sidebar.classList.remove("open");
+    sidebar.classList.add("closed");
+    localStorage.showSidebar = false;
+  }
+}
+function toggleSidebar() {
+  var sidebar = document.getElementById("sidebar");
+  sidebar.classList.toggle("open");
+  sidebar.classList.toggle("closed");
+  localStorage.showSidebar = !JSON.parse(localStorage.showSidebar);
+}
 function addNavEventHandlers() {
+  // toggle visibility of sidebar
+  var sidebarToggle = document.getElementById("sidebar-toggle");
+  sidebarToggle.addEventListener('click', toggleSidebar);
+
+  // click for left/right
   var nextArrow = document.getElementById("next-arrow");
   nextArrow.addEventListener('click', nextSlide);
 
   var prevArrow = document.getElementById("prev-arrow");
   prevArrow.addEventListener('click', prevSlide);
 
+  // keyboard shortcuts for prev/next
   document.onkeyup = function(e) {
     var key = e.keyCode ? e.keyCode : e.which;
 
-    if (key === 37) {        // left
+    if (key === 37) {           // left
       prevSlide();
-    } else if (key === 39) { // right
+    } else if (key === 39) {    // right
       nextSlide();
-    }
+    } else if (key === 221) {   // ]
+      toggleSidebar();
+    } 
   }
 }
 

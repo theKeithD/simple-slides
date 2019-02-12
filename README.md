@@ -25,6 +25,7 @@ A simple static slide scroller, designed to fit in an 8-hour jam. No outside lib
 - To develop this, we need little more than a text editor and a browser to test in. (Speaking of testing, testing frameworks will be considered "external libraries" and not used, much to the dismay of some)
 - To deploy this, we need little more than a static web server. Apache, nginx, GitHub Pages, whatever is most convenient.
 - I reluctantly decided to not use the built-in Promise API, just in case we wanted to support some non-Edge flavor of Microsoft browser. (It was either deal with callback fallout, or write a promise polyfill from scratch.)
+- Number of times `localStoage` was typed instead of `localStorage`: countless
 
 ## Credit
 - Photographs taken by the author
