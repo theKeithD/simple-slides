@@ -32,6 +32,7 @@ function init() {
   }
   if (!localStorage.getItem("showSidebar")) {
     localStorage.setItem("showSidebar", true);
+    document.getElementById("sidebar").className = "open";
   } else {
     var sidebar = document.getElementById("sidebar")
     if (JSON.parse(localStorage.showSidebar) === true) { 
