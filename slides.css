@@ -74,7 +74,7 @@ body {
 .slide-nav-arrow {
   z-index: 2;
   position: absolute;
-  width: 7.5%;
+  width: 12.5%;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.67);
   text-align: center;
@@ -110,6 +110,7 @@ body {
   position: absolute;
   visibility: hidden;
   background-position: center center;
+  background-repeat: no-repeat;
 }
 .slide-content.active-slide {
   visibility: visible;

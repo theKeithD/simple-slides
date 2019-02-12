@@ -11,14 +11,13 @@ Storage.prototype.getObject = function(key) {
 // on first load, load data from localStorage
 // if localStorage hasn't yet been populated, pull from default.json
 function init() {
-  if (!localStorage.getItem("settings") && !localStorage.getItem("slides")) {
+  if (!localStorage.getItem("slides")) {
     var xhr = new XMLHttpRequest();
     xhr.overrideMimeType("application/json");
     xhr.onreadystatechange = function() {
       if (this.readyState == 4) {
         if (this.status == 200) {
           var responseJson = JSON.parse(xhr.responseText);
-          localStorage.setObject("settings", responseJson.settings);
           localStorage.setObject("slides", responseJson.slides)
           preloadImages();
         } else {
@@ -31,6 +30,10 @@ function init() {
   } else {
     preloadImages();
   }
+  if (!localStorage.getItem("showSidebar")) {
+    localStorage.showSidebar = true;
+  }
+  addNavEventHandlers();
 }
 
 // called whenever we load a new batch of images (initLoad, import)
@@ -54,24 +57,22 @@ function preloadImages() {
   });
 }
 
+// add slides to main slide body
 function appendSlideElements() {
   var mainBody = document.getElementById("slide-area");
-  console.log(mainBody);
   localStorage.getObject("slides").forEach(function (slide, index) {
     var newSlide = document.createElement("div");
     newSlide.id = "slide-" + (index+1);
     newSlide.className = "slide-content";
-    if (index === 0) {
-      newSlide.classList.add("active-slide");
-    }
+
     newSlide.setAttribute("data-url", slide.img);
-    newSlide.setAttribute("data-index", index);
+    newSlide.setAttribute("data-index", (index+1));
     newSlide.setAttribute("data-caption", slide.caption);
     newSlide.setAttribute("data-fit", slide.fit);
     newSlide.setAttribute("title", slide.caption);
     newSlide.style.backgroundImage = "url('" + slide.img + "')"
     newSlide.style.backgroundPosition = "center center";
-    newSlide.style.backgroundSize = slide.fit;
+    newSlide.style.backgroundSize = slide.fit || "contain";
 
     var newCaption = document.createElement("div");
     newCaption.className = "slide-caption";
@@ -80,7 +81,76 @@ function appendSlideElements() {
 
     mainBody.appendChild(newSlide);
   });
+
+  determineDefaultSlide();
 }
+
+// check location hash, then check localStorage.settings, otherwise fall back to 1
+function determineDefaultSlide() {
+  if (location.hash && !isNaN(parseInt(location.hash.substring(1), 10))) {
+    setActiveSlide(parseInt(location.hash.substring(1), 10));
+  } else if (localStorage.currentSlide) {
+    setActiveSlide(localStorage.currentSlide);
+  } else {
+    setActiveSlide(1);
+  }
+}
+
+// set currently visible slide to given index
+// if out of bounds, set to the first/last possible slide
+// this will update localStoage, so the last-viewed slide should appear on reload
+function setActiveSlide(index) {
+  function clampSlideNumber(num) {
+    if (num <= 0) {
+      return 1;
+    } else if (num >= localStorage.getObject("slides").length) {
+      return localStorage.getObject("slides").length;
+    } else {
+      return num;
+    }
+  }
+
+  var targetSlide = clampSlideNumber(index);
+  var active = document.querySelector(".active-slide");
+
+  // no active slides
+  if (!active) {
+    document.getElementById("slide-" + targetSlide).classList.add("active-slide");
+    localStorage.currentSlide = targetSlide;
+  // active slide exists, check if this is actually a change
+  } else if (active && active.getAttribute("data-index") !== targetSlide) {
+    document.getElementById("slide-" + active.getAttribute("data-index")).classList.remove("active-slide");
+    document.getElementById("slide-" + targetSlide).classList.add("active-slide");
+    localStorage.currentSlide = targetSlide;
+  }
+}
+
+function nextSlide() {
+  setActiveSlide(parseInt(localStorage.currentSlide, 10) + 1);
+}
+function prevSlide() {
+  setActiveSlide(parseInt(localStorage.currentSlide, 10) - 1);  
+}
+
+// event handlers for prev/next in main slide area
+function addNavEventHandlers() {
+  var nextArrow = document.getElementById("next-arrow");
+  nextArrow.addEventListener('click', nextSlide);
+
+  var prevArrow = document.getElementById("prev-arrow");
+  prevArrow.addEventListener('click', prevSlide);
+
+  document.onkeyup = function(e) {
+    var key = e.keyCode ? e.keyCode : e.which;
+
+    if (key === 37) {        // left
+      prevSlide();
+    } else if (key === 39) { // right
+      nextSlide();
+    }
+  }
+}
+
 
 
 
