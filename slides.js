@@ -8,6 +8,13 @@ Storage.prototype.getObject = function(key) {
     return value && JSON.parse(value);
 }
 
+// returns true if height exceeds width
+function isTallViewport() {
+  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+  return w < h;
+}
+
 // on first load, load data from localStorage
 // if localStorage hasn't yet been populated, pull from default.json
 function init() {
@@ -30,17 +37,8 @@ function init() {
   } else {
     preloadImages();
   }
-  if (!localStorage.getItem("showSidebar")) {
-    localStorage.setItem("showSidebar", true);
-    document.getElementById("sidebar").className = "open";
-  } else {
-    var sidebar = document.getElementById("sidebar")
-    if (JSON.parse(localStorage.showSidebar) === true) { 
-      sidebar.className = "open";
-    } else { 
-      sidebar.className = "closed";
-    }
-  }
+
+  initSidebar();
   addNavEventHandlers();
 }
 
@@ -64,6 +62,30 @@ function preloadImages() {
     }
     imgs[i].src = url;
   });
+}
+
+// handle all the little ins and outs of initializing sidebar state
+function initSidebar() {
+  // NOTE: do not open sidebar by default on tall screens
+  var tallViewport = isTallViewport();
+
+  if (!localStorage.getItem("showSidebar")) {
+    localStorage.setItem("showSidebar", !tallViewport);
+    var className = (tallViewport) ? "closed" : "open";
+    document.getElementById("sidebar").className = className;
+  } else {
+    var sidebar = document.getElementById("sidebar")
+    if (JSON.parse(localStorage.showSidebar) === true && !tallViewport) {
+      sidebar.className = "open";
+    } else {
+      sidebar.className = "closed";
+
+      // ensure localStorage is updated in certain cases
+      if (tallViewport) {
+        localStorage.showSidebar = false;
+      }
+    }
+  }
 }
 
 // add slides to main slide body
@@ -181,9 +203,7 @@ function jumpToSlideFromSidebar(slide) {
   setActiveSlide(slide);
 
   // if on a tall device, we automatically close the sidebar
-  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-  if (w < h) {
+  if (isTallViewport()) {
     var sidebar = document.getElementById("sidebar");
     sidebar.classList.remove("open");
     sidebar.classList.add("closed");
