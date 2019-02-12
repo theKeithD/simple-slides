@@ -21,7 +21,7 @@ A simple static slide scroller, designed to fit in an 8-hour jam. No outside lib
 ## Design Notes and Restrictions
 - How do we make this simple to write and deploy? Part of this comes as a natural result of the "no external libraries" requirement.
 - Some functionality we come to expect from modern applications (file storage, slide layout/design, etc) wouldn't easily fit into the alloted timeframe.
--- As such, some features were adjusted/added to work around this barebones feature set and make it at least somewhat pleasant to use.
+  - As such, some features were adjusted/added to work around this barebones feature set and make it at least somewhat pleasant to use.
 - To develop this, we need little more than a text editor and a browser to test in. (Speaking of testing, testing frameworks will be considered "external libraries" and not used, much to the dismay of some)
 - To deploy this, we need little more than a static web server. Apache, nginx, GitHub Pages, whatever is most convenient.
 - I reluctantly decided to not use the built-in Promise API, just in case we wanted to support some non-Edge flavor of Microsoft browser. (It was either deal with callback fallout, or write a promise polyfill from scratch.)
@@ -30,7 +30,7 @@ A simple static slide scroller, designed to fit in an 8-hour jam. No outside lib
 ## Credit
 - Photographs taken by the author
 - SVGs taken from the following public domain examples:
--- Slide 12, "Twelve Angry Tests (SVG)": https://publicdomainvectors.org/en/free-clipart/Judge-with-gavel/41498.html
--- Slide 13, "Lucky 13th Test (SVG)": https://publicdomainvectors.org/en/free-clipart/Flying-Witch-during-full-moon/78453.html
--- Slide 14, "One Four Test (SVG)": https://publicdomainvectors.org/en/free-clipart/Japanese-train/45512.html
--- Slide 15, "Final Fifteenth Test (SVG)": https://en.wikipedia.org/wiki/File:SVG_example_markup_grid.svg
+  - Slide 12, "Twelve Angry Tests (SVG)": https://publicdomainvectors.org/en/free-clipart/Judge-with-gavel/41498.html
+  - Slide 13, "Lucky 13th Test (SVG)": https://publicdomainvectors.org/en/free-clipart/Flying-Witch-during-full-moon/78453.html
+  - Slide 14, "One Four Test (SVG)": https://publicdomainvectors.org/en/free-clipart/Japanese-train/45512.html
+  - Slide 15, "Final Fifteenth Test (SVG)": https://en.wikipedia.org/wiki/File:SVG_example_markup_grid.svg
