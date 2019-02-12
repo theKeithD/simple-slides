@@ -1,0 +1,85 @@
+{
+  "settings": {
+    "currentSlide": 1,
+    "showSidebar": true,
+    "slideAnimations": true,
+    "title": "Test Slide Deck"
+  },
+  "slides": [
+    {
+      "img": "static/img/20181223_143209.jpg",
+      "caption": "First Test",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/20181223_143220.jpg",
+      "caption": "Test the Second",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/20181223_171207.jpg",
+      "caption": "Tertiary Test",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/20181229_105204.jpg",
+      "caption": "Test Quatro",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/20181229_105521.jpg",
+      "caption": "Fifth Test",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/20181229_111500.jpg",
+      "caption": "Test of 6",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/20181229_115112.jpg",
+      "caption": "7-Test",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/20181222_200749.jpg",
+      "caption": "Test ∞",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/20190113_194129.jpg",
+      "caption": "Test? Nein.",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/IMG_20180329_231751.jpg",
+      "caption": "Tentest",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/IMG_20180331_152255.jpg",
+      "caption": "T-Eleven",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/SVG_example_markup_grid.svg",
+      "caption": "Twelve Angry Tests",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/SVG_example_markup_grid.svg",
+      "caption": "Lucky 13th Test",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/SVG_example_markup_grid.svg",
+      "caption": "One Four Test",
+      "fit": "cover"
+    },
+    {
+      "img": "static/img/SVG_example_markup_grid.svg",
+      "caption": "Final Fifteenth Test (SVG)",
+      "fit": "cover"
+    }
+  ]
+}
