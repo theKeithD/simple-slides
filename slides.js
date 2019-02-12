@@ -196,6 +196,48 @@ function toggleSidebar() {
   sidebar.classList.toggle("closed");
   localStorage.showSidebar = !JSON.parse(localStorage.showSidebar);
 }
+
+// very heavily based on example from: http://www.javascriptkit.com/javatutors/touchevents2.shtml
+function setUpTouchHandlers() {
+  var slideArea = document.getElementById("slide-area");
+  var startX,
+      startY,
+      dist,
+      thresholdMain = 125, // minimum magnitude of swipe
+      thresholdSecondary = 100, // maximum magnitude in perpendicular direction (left != up-left)
+      allowedTime = 200, // ignore movements longer than this
+      elapsedTime,
+      startTime;
+
+  slideArea.addEventListener('touchstart', function (e) {
+    var touch = e.changedTouches[0];
+        dist = 0;
+        startX = touch.pageX;
+        startY = touch.pageY;
+        startTime = new Date().getTime();
+        e.preventDefault();
+  }, false);
+   
+  slideArea.addEventListener('touchmove', function(e){
+    e.preventDefault();
+  }, false)
+
+  slideArea.addEventListener('touchend', function(e){
+    var touch = e.changedTouches[0];
+    dist = touch.pageX - startX // get total dist traveled by finger while in contact with surface
+    elapsedTime = new Date().getTime() - startTime // get time elapsed
+    // check that elapsed time is within specified, horizontal dist traveled >= threshold, and vertical dist traveled <= 100
+    var isLeft = (elapsedTime <= allowedTime && dist <= thresholdMain && Math.abs(touch.pageY - startY) <= thresholdSecondary)
+    var isRight = (elapsedTime <= allowedTime && dist >= thresholdMain && Math.abs(touch.pageY - startY) <= thresholdSecondary)
+    if (isLeft) {
+      nextSlide();
+    } else if (isRight) {
+      prevSlide();
+    }
+    e.preventDefault()
+  }, false)
+}
+
 function addNavEventHandlers() {
   // toggle visibility of sidebar
   var sidebarToggle = document.getElementById("sidebar-toggle");
@@ -220,9 +262,8 @@ function addNavEventHandlers() {
       toggleSidebar();
     } 
   }
+
+  setUpTouchHandlers();
 }
-
-
-
 
 window.addEventListener("load", init);
